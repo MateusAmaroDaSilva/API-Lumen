@@ -39,6 +39,9 @@ $app->middleware([
 // Registrar service providers
 $app->register(App\Providers\RepositoryServiceProvider::class);
 $app->register(Illuminate\Queue\QueueServiceProvider::class);
+$app->register(Illuminate\Mail\MailServiceProvider::class);
+
+$app->configure('mail');
 
 // Registrar as rotas
 $app->router->group([

@@ -20,9 +20,10 @@ class TicketController extends Controller
     public function buy(Request $request): JsonResponse
     {
         $this->validate($request, [
-            'event_id'   => 'required|integer|exists:events,id',
-            'user_name'  => 'required|string|max:255',
-            'user_email' => 'required|email|max:255',
+            'event_id'       => 'required|integer|exists:events,id',
+            'user_name'      => 'required|string|max:255',
+            'user_email'     => 'required|email|max:255',
+            'payment_method' => 'required|string|in:credit_card,pix,boleto',
         ]);
 
         try {
