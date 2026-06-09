@@ -123,6 +123,18 @@
                 <span v-if="buyErrors.user_email" class="form-error">{{ buyErrors.user_email }}</span>
               </div>
 
+              <div class="form-group">
+                <label for="input-payment-method" class="form-label">Forma de pagamento *</label>
+                <select
+                  id="input-payment-method" v-model="buyForm.payment_method"
+                  class="form-input form-select" :class="{ 'is-error': buyErrors.payment_method }"
+                >
+                  <option value="" disabled>Selecione uma opção</option>
+                  <option value="credit_card">Cartão de Crédito</option>
+                </select>
+                <span v-if="buyErrors.payment_method" class="form-error">{{ buyErrors.payment_method }}</span>
+              </div>
+
               <div class="buy-summary">
                 <div class="summary-row"><span>Ingresso (1×)</span><span>R$ {{ formatPrice(event.price) }}</span></div>
                 <div class="perforation"></div>
@@ -161,7 +173,7 @@ const eventTickets = ref([])
 const loading = ref(true)
 const error = ref(null)
 
-const buyForm = ref({ user_name: '', user_email: '' })
+const buyForm = ref({ user_name: '', user_email: '', payment_method: '' })
 const buyErrors = ref({})
 const buySubmitting = ref(false)
 const toast = ref({ show: false, message: '', title: '', type: 'success' })
@@ -194,6 +206,7 @@ function validateBuy() {
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(buyForm.value.user_email)) {
     errs.user_email = 'Informe um email válido.'
   }
+  if (!buyForm.value.payment_method) errs.payment_method = 'Selecione uma forma de pagamento.'
   buyErrors.value = errs
   return Object.keys(errs).length === 0
 }
@@ -206,10 +219,11 @@ async function handleBuy() {
       event_id: event.value.id,
       user_name: buyForm.value.user_name.trim(),
       user_email: buyForm.value.user_email.trim(),
+      payment_method: buyForm.value.payment_method,
     })
 
     toast.value = { show: true, title: 'Ingresso solicitado!', message: 'Seu pedido foi registrado com sucesso.', type: 'success' }
-    buyForm.value = { user_name: '', user_email: '' }
+    buyForm.value = { user_name: '', user_email: '', payment_method: '' }
 
     const updated = await eventService.getEvent(route.params.id)
     event.value = updated
