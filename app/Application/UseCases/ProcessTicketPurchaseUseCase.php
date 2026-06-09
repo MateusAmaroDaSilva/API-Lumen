@@ -3,6 +3,7 @@
 namespace App\Application\UseCases;
 
 use App\Application\DTOs\BuyTicketDTO;
+use App\Application\Notifications\TicketNotifierInterface;
 use App\Domain\Event\Repositories\EventRepositoryInterface;
 use App\Domain\Sale\Entities\Ticket;
 use App\Domain\Sale\Repositories\TicketRepositoryInterface;
@@ -15,12 +16,12 @@ class ProcessTicketPurchaseUseCase
     public function __construct(
         private readonly EventRepositoryInterface  $eventRepository,
         private readonly TicketRepositoryInterface $ticketRepository,
+        private readonly TicketNotifierInterface   $ticketNotifier,
     ) {}
 
     public function execute(BuyTicketDTO $dto): Ticket
     {
-        return DB::transaction(function () use ($dto) {
-            // lockForUpdate garante que apenas uma transação processa este evento por vez
+        [$ticket, $event] = DB::transaction(function () use ($dto) {
             $event = $this->eventRepository->findByIdWithLock($dto->eventId);
 
             if (!$event) {
@@ -50,7 +51,16 @@ class ProcessTicketPurchaseUseCase
 
             $this->eventRepository->save($event);
 
-            return $this->ticketRepository->create($ticket);
+            return [$this->ticketRepository->create($ticket), $event];
         });
+
+        $this->ticketNotifier->notifyConfirmed(
+            $ticket,
+            $event,
+            $dto->userName,
+            $dto->userEmail
+        );
+
+        return $ticket;
     }
 }

@@ -1,0 +1,286 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Sistema de Ingressos",
+    "description": "API REST para criação de eventos e compra de ingressos com processamento assíncrono via fila.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000",
+      "description": "Servidor local"
+    }
+  ],
+  "tags": [
+    { "name": "Eventos", "description": "Gerenciamento de eventos" },
+    { "name": "Ingressos", "description": "Compra e listagem de ingressos" }
+  ],
+  "paths": {
+    "/v1/events": {
+      "get": {
+        "tags": ["Eventos"],
+        "summary": "Listar eventos",
+        "description": "Retorna todos os eventos cadastrados, ordenados por data.",
+        "responses": {
+          "200": {
+            "description": "Lista de eventos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/EventResponse" }
+                    }
+                  }
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": 1,
+                      "name": "Show da Banda X",
+                      "description": "Um show incrível",
+                      "price": 120.00,
+                      "event_date": "2026-12-01 20:00:00",
+                      "capacity": 500,
+                      "is_past": false,
+                      "has_capacity": true
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Eventos"],
+        "summary": "Criar evento",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateEventRequest" },
+              "example": {
+                "name": "Show da Banda X",
+                "description": "Um show incrível no centro da cidade",
+                "price": 120.00,
+                "event_date": "2026-12-01 20:00:00",
+                "capacity": 500
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Evento criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "data": { "$ref": "#/components/schemas/EventResponse" }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Dados inválidos",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/events/{id}": {
+      "get": {
+        "tags": ["Eventos"],
+        "summary": "Buscar evento por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Evento encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/EventResponse" }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Evento não encontrado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "example": { "message": "Evento não encontrado." }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tickets/buy": {
+      "post": {
+        "tags": ["Ingressos"],
+        "summary": "Solicitar compra de ingresso",
+        "description": "Valida o evento e enfileira o processamento da compra. Retorna 202 imediatamente; o ingresso é confirmado de forma assíncrona.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BuyTicketRequest" },
+              "example": {
+                "event_id": 1,
+                "user_name": "João Silva",
+                "user_email": "joao@example.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Solicitação enfileirada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "event": { "type": "string" },
+                    "status": { "type": "string", "example": "queued" }
+                  }
+                },
+                "example": {
+                  "message": "Solicitação de compra recebida. Seu ingresso está sendo processado.",
+                  "event": "Show da Banda X",
+                  "status": "queued"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Evento não encontrado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Evento encerrado, esgotado ou dados inválidos",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" },
+                "examples": {
+                  "evento_passado": {
+                    "summary": "Evento já ocorreu",
+                    "value": { "message": "Não é possível comprar ingressos para eventos que já ocorreram." }
+                  },
+                  "sem_vagas": {
+                    "summary": "Ingressos esgotados",
+                    "value": { "message": "Não há ingressos disponíveis para este evento." }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/tickets": {
+      "get": {
+        "tags": ["Ingressos"],
+        "summary": "Listar ingressos",
+        "description": "Retorna todos os ingressos cadastrados.",
+        "responses": {
+          "200": {
+            "description": "Lista de ingressos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/TicketResponse" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateEventRequest": {
+        "type": "object",
+        "required": ["name", "description", "price", "event_date", "capacity"],
+        "properties": {
+          "name": { "type": "string", "maxLength": 255, "example": "Show da Banda X" },
+          "description": { "type": "string", "example": "Um show incrível no centro da cidade" },
+          "price": { "type": "number", "minimum": 0, "example": 120.00 },
+          "event_date": { "type": "string", "format": "date-time", "example": "2026-12-01 20:00:00", "description": "Data futura no formato Y-m-d H:i:s" },
+          "capacity": { "type": "integer", "minimum": 1, "example": 500 }
+        }
+      },
+      "BuyTicketRequest": {
+        "type": "object",
+        "required": ["event_id", "user_name", "user_email"],
+        "properties": {
+          "event_id": { "type": "integer", "example": 1 },
+          "user_name": { "type": "string", "maxLength": 255, "example": "João Silva" },
+          "user_email": { "type": "string", "format": "email", "maxLength": 255, "example": "joao@example.com" }
+        }
+      },
+      "EventResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "name": { "type": "string", "example": "Show da Banda X" },
+          "description": { "type": "string", "example": "Um show incrível" },
+          "price": { "type": "number", "example": 120.00 },
+          "event_date": { "type": "string", "example": "2026-12-01 20:00:00" },
+          "capacity": { "type": "integer", "example": 498 },
+          "is_past": { "type": "boolean", "example": false },
+          "has_capacity": { "type": "boolean", "example": true }
+        }
+      },
+      "TicketResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "event_id": { "type": "integer", "example": 1 },
+          "user_id": { "type": "integer", "example": 3 },
+          "status": { "type": "string", "enum": ["pending", "confirmed", "expired"], "example": "confirmed" }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" }
+        }
+      }
+    }
+  }
+}

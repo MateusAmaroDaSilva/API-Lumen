@@ -1,19 +1,15 @@
 <template>
   <footer class="app-footer" id="app-footer">
+    <div class="footer-perf" aria-hidden="true"></div>
     <div class="footer-content">
       <div class="footer-left">
-        <div class="footer-brand">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
-            <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
-          </svg>
-          <span>Sistema de Ingressos</span>
-        </div>
-        <p class="footer-desc">Plataforma de gestão e venda de ingressos para eventos.</p>
+        <div class="footer-brand">Bilheteria</div>
+        <p class="footer-desc">Gestão de eventos &amp; venda de ingressos — projeto acadêmico UNIMAR.</p>
       </div>
       <div class="footer-right">
-        <span class="footer-api">API: {{ apiUrl }}</span>
-        <span class="footer-copy">&copy; {{ currentYear }}</span>
+        <span class="footer-meta">Endpoint</span>
+        <span class="footer-api">{{ apiUrl }}</span>
+        <span class="footer-copy">© {{ currentYear }} · Admit One</span>
       </div>
     </div>
   </footer>
@@ -28,58 +24,87 @@ const currentYear = computed(() => new Date().getFullYear())
 
 <style scoped>
 .app-footer {
-  background: var(--color-dark);
-  border-top: 1px solid var(--color-border);
-  padding: 24px 0;
-  margin-top: 60px;
+  position: relative;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  padding: 40px 0 36px;
+  margin-top: 90px;
+}
+
+/* picote no topo do rodapé, como destacar a base do ingresso */
+.footer-perf {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  transform: translateY(-50%);
+  background:
+    radial-gradient(circle at center, var(--color-bg) 0 6px, transparent 6.5px);
+  background-size: 20px 12px;
+  background-repeat: repeat-x;
+  background-position: center;
 }
 
 .footer-content {
-  max-width: 1280px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 32px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 20px;
 }
 
 .footer-brand {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-text);
-  font-weight: 600;
-  font-size: 0.9rem;
-  margin-bottom: 4px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
 }
 
 .footer-desc {
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  color: rgba(251, 246, 236, 0.6);
+  max-width: 42ch;
 }
 
 .footer-right {
   display: flex;
-  align-items: center;
-  gap: 20px;
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  text-align: right;
+}
+
+.footer-meta {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-primary-light);
 }
 
 .footer-api {
-  padding: 4px 10px;
-  background: var(--color-surface);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: rgba(251, 246, 236, 0.85);
+  padding: 5px 11px;
+  border: 1px solid rgba(251, 246, 236, 0.2);
   border-radius: var(--radius-sm);
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  font-size: 0.75rem;
+}
+
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: rgba(251, 246, 236, 0.45);
 }
 
 @media (max-width: 640px) {
-  .footer-content {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  .footer-content { flex-direction: column; align-items: flex-start; }
+  .footer-right { align-items: flex-start; text-align: left; }
 }
 </style>

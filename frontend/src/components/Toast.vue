@@ -35,9 +35,7 @@ watch(() => props.show, (val) => {
   if (val) {
     visible.value = true
     clearTimeout(timer)
-    timer = setTimeout(() => {
-      close()
-    }, props.duration)
+    timer = setTimeout(() => close(), props.duration)
   }
 })
 
@@ -47,10 +45,10 @@ function close() {
 }
 
 const icons = {
-  success: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
-  error: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>',
-  warning: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>',
-  info: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+  success: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  error: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+  warning: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="m10.3 3.9-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3l-8-14a2 2 0 0 0-3.4 0Z"/></svg>',
+  info: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16v-4"/><path d="M12 8h.01"/><circle cx="12" cy="12" r="10"/></svg>',
 }
 
 const icon = computed(() => icons[props.type] || icons.info)
@@ -59,7 +57,7 @@ const icon = computed(() => icons[props.type] || icons.info)
 <style scoped>
 .toast-wrapper {
   position: fixed;
-  top: calc(var(--header-height) + 16px);
+  top: calc(var(--header-height) + 18px);
   right: 24px;
   z-index: 9999;
 }
@@ -67,96 +65,78 @@ const icon = computed(() => icons[props.type] || icons.info)
 .toast {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
-  padding: 16px 20px;
+  gap: 13px;
+  padding: 16px 18px;
   min-width: 320px;
   max-width: 440px;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  backdrop-filter: blur(16px);
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-press);
 }
-
-.toast-success { border-left: 3px solid var(--color-success); }
-.toast-error { border-left: 3px solid var(--color-danger); }
-.toast-warning { border-left: 3px solid var(--color-warning); }
-.toast-info { border-left: 3px solid var(--color-primary); }
-
-.toast-success .toast-icon { color: var(--color-success); }
-.toast-error .toast-icon { color: var(--color-danger); }
-.toast-warning .toast-icon { color: var(--color-warning); }
-.toast-info .toast-icon { color: var(--color-primary); }
 
 .toast-icon {
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
   flex-shrink: 0;
-  padding-top: 2px;
+  border: 1.5px solid currentColor;
+  border-radius: var(--radius-sm);
 }
 
-.toast-content {
-  flex: 1;
+.toast-success { --toast-c: var(--color-success); }
+.toast-error { --toast-c: var(--color-danger); }
+.toast-warning { --toast-c: var(--color-warning); }
+.toast-info { --toast-c: var(--color-primary); }
+
+.toast-success .toast-icon,
+.toast-error .toast-icon,
+.toast-warning .toast-icon,
+.toast-info .toast-icon {
+  color: var(--toast-c);
+  background: color-mix(in srgb, var(--toast-c) 12%, transparent);
 }
 
 .toast-title {
   display: block;
-  font-size: 0.85rem;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--color-text);
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .toast-message {
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
-  line-height: 1.4;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
   margin: 0;
 }
+
+.toast-content { flex: 1; padding-top: 1px; }
 
 .toast-close {
   background: none;
   border: none;
   color: var(--color-text-muted);
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   line-height: 1;
-  padding: 0 4px;
-  cursor: pointer;
+  padding: 0 2px;
   transition: color var(--transition-fast);
 }
+.toast-close:hover { color: var(--color-ink); }
 
-.toast-close:hover {
-  color: var(--color-text);
-}
-
-/* Transition */
-.toast-enter-active {
-  animation: toastIn 0.35s ease both;
-}
-
-.toast-leave-active {
-  animation: toastOut 0.25s ease both;
-}
+.toast-enter-active { animation: toastIn 0.3s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
+.toast-leave-active { animation: toastOut 0.22s ease both; }
 
 @keyframes toastIn {
-  from {
-    opacity: 0;
-    transform: translateX(40px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
+  from { opacity: 0; transform: translateX(36px); }
+  to { opacity: 1; transform: translateX(0); }
 }
-
 @keyframes toastOut {
-  from {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(40px) scale(0.95);
-  }
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(36px); }
 }
 </style>

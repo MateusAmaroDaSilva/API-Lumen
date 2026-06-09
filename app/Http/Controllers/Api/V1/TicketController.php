@@ -26,7 +26,7 @@ class TicketController extends Controller
         ]);
 
         try {
-            $dto    = BuyTicketDTO::fromArray($request->all());
+            $dto = BuyTicketDTO::fromArray($request->all());
             $result = $this->requestTicketUseCase->execute($dto);
             return response()->json($result, 202);
         } catch (DomainException $e) {

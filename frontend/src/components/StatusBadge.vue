@@ -19,7 +19,7 @@ const statusMap = {
   pending: { label: 'Pendente', class: 'badge-warning' },
   confirmed: { label: 'Confirmado', class: 'badge-success' },
   expired: { label: 'Expirado', class: 'badge-danger' },
-  available: { label: 'Disponível', class: 'badge-success' },
+  available: { label: 'À venda', class: 'badge-success' },
   soldout: { label: 'Esgotado', class: 'badge-danger' },
 }
 
@@ -31,25 +31,25 @@ const badgeClass = computed(() => statusMap[props.status]?.class || 'badge-muted
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  border-radius: 100px;
+  gap: 7px;
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.12em;
+  border: 1.5px solid currentColor;
 }
 
 .badge-dot {
   width: 6px;
   height: 6px;
-  border-radius: 50%;
   background: currentColor;
-  animation: pulse 2s infinite;
 }
 
 .badge-success { color: var(--color-success); background: var(--color-success-bg); }
 .badge-warning { color: var(--color-warning); background: var(--color-warning-bg); }
-.badge-danger { color: var(--color-danger); background: var(--color-danger-bg); }
-.badge-muted { color: var(--color-text-muted); background: rgba(139, 148, 158, 0.15); }
+.badge-danger  { color: var(--color-danger);  background: var(--color-danger-bg); }
+.badge-muted   { color: var(--color-text-muted); background: rgba(138, 124, 102, 0.12); }
 </style>

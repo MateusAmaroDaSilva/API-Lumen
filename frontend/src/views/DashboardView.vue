@@ -1,116 +1,95 @@
 <template>
   <div class="dashboard" id="dashboard-view">
-    <!-- Hero Section -->
+    <!-- ── Hero / Marquee ── -->
     <section class="hero" id="hero-section">
-      <div class="hero-bg">
-        <div class="hero-gradient"></div>
-        <div class="hero-particles">
-          <span v-for="i in 6" :key="i" class="particle" :style="particleStyle(i)"></span>
-        </div>
-      </div>
-      <div class="hero-content">
-        <h1 class="hero-title">
-          Sistema de
-          <span class="hero-accent">Ingressos</span>
-        </h1>
-        <p class="hero-subtitle">
-          Gerencie eventos e vendas de ingressos em uma plataforma moderna e eficiente.
-        </p>
-        <div class="hero-actions">
-          <router-link to="/events/new" class="btn btn-accent btn-lg" id="hero-create-event">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/>
-            </svg>
-            Criar Evento
-          </router-link>
-          <router-link to="/events" class="btn btn-secondary btn-lg" id="hero-view-events">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>
-            </svg>
-            Ver Eventos
-          </router-link>
-        </div>
-      </div>
-    </section>
-
-    <!-- Stats -->
-    <section class="stats-section" id="stats-section">
-      <div class="stats-grid grid grid-3 stagger-list">
-        <div class="stat-card fade-in-up" id="stat-events">
-          <div class="stat-icon stat-icon-primary">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>
-            </svg>
-          </div>
-          <div class="stat-info">
-            <span class="stat-value">{{ stats.events }}</span>
-            <span class="stat-label">Eventos</span>
+      <div class="hero-rule"></div>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <span class="eyebrow">Bilheteria · Box Office</span>
+          <h1 class="hero-title">
+            Cada evento merece<br />
+            uma boa <span class="hero-accent">entrada</span>.
+          </h1>
+          <p class="hero-subtitle">
+            Cadastre eventos e venda ingressos em tempo real — com controle de
+            capacidade e zero overbooking, do balcão ao código de barras.
+          </p>
+          <div class="hero-actions">
+            <router-link to="/events/new" class="btn btn-primary btn-lg" id="hero-create-event">
+              Criar evento
+            </router-link>
+            <router-link to="/events" class="btn btn-secondary btn-lg" id="hero-view-events">
+              Ver programação
+            </router-link>
           </div>
         </div>
 
-        <div class="stat-card fade-in-up" id="stat-tickets">
-          <div class="stat-icon stat-icon-accent">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
-              <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
-            </svg>
+        <!-- Ticket decorativo -->
+        <div class="hero-ticket" aria-hidden="true">
+          <div class="ht-top">
+            <span>Admit One</span>
+            <span class="ht-serial">Nº 0001</span>
           </div>
-          <div class="stat-info">
-            <span class="stat-value">{{ stats.tickets }}</span>
-            <span class="stat-label">Ingressos Vendidos</span>
+          <div class="ht-body">
+            <span class="ht-label">Apresenta</span>
+            <strong class="ht-name">Noite de Estreia</strong>
+            <div class="ht-meta">
+              <span>Fila A · Assento 12</span>
+              <span>Portão 3</span>
+            </div>
           </div>
-        </div>
-
-        <div class="stat-card fade-in-up" id="stat-available">
-          <div class="stat-icon stat-icon-success">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
-          </div>
-          <div class="stat-info">
-            <span class="stat-value">{{ stats.available }}</span>
-            <span class="stat-label">Eventos Disponíveis</span>
+          <div class="ht-perf"><span class="ht-notch l"></span><span class="ht-notch r"></span></div>
+          <div class="ht-foot">
+            <div class="barcode"></div>
+            <span class="ht-price">R$ 120,00</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Quick Actions -->
-    <section class="quick-actions" id="quick-actions">
-      <h2 class="section-title">Acesso Rápido</h2>
-      <div class="actions-grid grid grid-3 stagger-list">
-        <router-link to="/events" class="action-card fade-in-up" id="action-events">
-          <div class="action-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>
-            </svg>
-          </div>
-          <h3>Listar Eventos</h3>
-          <p>Veja todos os eventos cadastrados e seus detalhes.</p>
-          <span class="action-arrow">→</span>
+    <!-- ── Ledger / Stats ── -->
+    <section class="ledger" id="stats-section">
+      <div class="ledger-item stagger-list">
+        <span class="ledger-value" id="stat-events">{{ stats.events }}</span>
+        <span class="ledger-label">Eventos<br />cadastrados</span>
+      </div>
+      <div class="ledger-item">
+        <span class="ledger-value" id="stat-tickets">{{ stats.tickets }}</span>
+        <span class="ledger-label">Ingressos<br />emitidos</span>
+      </div>
+      <div class="ledger-item">
+        <span class="ledger-value" id="stat-available">{{ stats.available }}</span>
+        <span class="ledger-label">Eventos<br />à venda</span>
+      </div>
+    </section>
+
+    <!-- ── Quick actions ── -->
+    <section class="quick" id="quick-actions">
+      <header class="quick-head">
+        <span class="eyebrow">Atalhos</span>
+        <h2 class="section-title">Por onde começar</h2>
+      </header>
+
+      <div class="quick-grid stagger-list">
+        <router-link to="/events" class="quick-card fade-in-up" id="action-events">
+          <span class="quick-num">01</span>
+          <h3>Listar eventos</h3>
+          <p>Veja toda a programação cadastrada, com preço, data e disponibilidade.</p>
+          <span class="quick-go">Abrir &rarr;</span>
         </router-link>
 
-        <router-link to="/events/new" class="action-card fade-in-up" id="action-new-event">
-          <div class="action-icon action-icon-accent">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/>
-            </svg>
-          </div>
-          <h3>Criar Evento</h3>
-          <p>Cadastre um novo evento com preço, data e capacidade.</p>
-          <span class="action-arrow">→</span>
+        <router-link to="/events/new" class="quick-card fade-in-up" id="action-new-event">
+          <span class="quick-num">02</span>
+          <h3>Criar evento</h3>
+          <p>Defina nome, descrição, preço, data e capacidade em poucos segundos.</p>
+          <span class="quick-go">Abrir &rarr;</span>
         </router-link>
 
-        <router-link to="/tickets" class="action-card fade-in-up" id="action-tickets">
-          <div class="action-icon action-icon-warning">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>
-              <path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>
-            </svg>
-          </div>
-          <h3>Ver Ingressos</h3>
-          <p>Acompanhe todos os ingressos vendidos e seus status.</p>
-          <span class="action-arrow">→</span>
+        <router-link to="/tickets" class="quick-card fade-in-up" id="action-tickets">
+          <span class="quick-num">03</span>
+          <h3>Ver ingressos</h3>
+          <p>Acompanhe cada ingresso emitido e o status do pedido de compra.</p>
+          <span class="quick-go">Abrir &rarr;</span>
         </router-link>
       </div>
     </section>
@@ -122,23 +101,7 @@ import { ref, onMounted } from 'vue'
 import { eventService } from '../services/eventService'
 import { ticketService } from '../services/ticketService'
 
-const stats = ref({
-  events: '—',
-  tickets: '—',
-  available: '—',
-})
-
-function particleStyle(i) {
-  const size = 4 + Math.random() * 6
-  return {
-    width: `${size}px`,
-    height: `${size}px`,
-    left: `${10 + (i * 15)}%`,
-    top: `${20 + (i * 10)}%`,
-    animationDelay: `${i * 0.5}s`,
-    animationDuration: `${3 + i * 0.5}s`,
-  }
-}
+const stats = ref({ events: '—', tickets: '—', available: '—' })
 
 onMounted(async () => {
   try {
@@ -156,260 +119,287 @@ onMounted(async () => {
       available: eventsList.filter((e) => e.has_capacity && !e.is_past).length,
     }
   } catch {
-    // keep defaults
+    /* mantém defaults */
   }
 })
 </script>
 
 <style scoped>
-.dashboard {
-  padding-top: var(--header-height);
-}
+.dashboard { padding-top: var(--header-height); }
 
 /* ── Hero ── */
 .hero {
-  position: relative;
-  min-height: 420px;
-  display: flex;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 64px 32px 24px;
+}
+
+.hero-rule {
+  height: 2px;
+  background: var(--color-ink);
+  margin-bottom: 40px;
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1.25fr 0.9fr;
+  gap: 48px;
   align-items: center;
-  justify-content: center;
-  overflow: hidden;
 }
 
-.hero-bg {
-  position: absolute;
-  inset: 0;
-}
-
-.hero-gradient {
-  position: absolute;
-  inset: 0;
-  background: var(--gradient-hero);
-}
-
-.hero-gradient::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 30% 50%, rgba(0, 255, 255, 0.08) 0%, transparent 60%);
-}
-
-.hero-particles {
-  position: absolute;
-  inset: 0;
-}
-
-.particle {
-  position: absolute;
-  background: rgba(0, 255, 255, 0.3);
-  border-radius: 50%;
-  animation: float 4s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
-  50% { transform: translateY(-20px) scale(1.3); opacity: 0.6; }
-}
-
-.hero-content {
-  position: relative;
-  z-index: 1;
-  text-align: center;
-  padding: 60px 24px;
-  max-width: 640px;
-  animation: fadeInUp 0.6s ease both;
-}
+.hero-copy { animation: fadeInUp 0.6s ease both; }
 
 .hero-title {
-  font-size: 3rem;
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 6.5vw, 4.6rem);
+  font-weight: 600;
   letter-spacing: -0.03em;
-  line-height: 1.1;
-  margin-bottom: 16px;
-  color: #fff;
+  line-height: 0.97;
+  margin: 24px 0 20px;
+  color: var(--color-ink);
 }
 
 .hero-accent {
-  background: linear-gradient(135deg, var(--color-accent) 0%, #66FFE6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-style: italic;
+  color: var(--color-primary);
 }
 
 .hero-subtitle {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: clamp(1rem, 1.6vw, 1.12rem);
+  color: var(--color-text-secondary);
   margin-bottom: 32px;
   line-height: 1.6;
+  max-width: 48ch;
 }
 
 .hero-actions {
   display: flex;
-  gap: 12px;
-  justify-content: center;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
-/* ── Stats ── */
-.stats-section {
-  max-width: 1280px;
-  margin: -40px auto 0;
-  padding: 0 24px;
+/* ── Ticket decorativo ── */
+.hero-ticket {
   position: relative;
-  z-index: 2;
-}
-
-.stat-card {
-  background: var(--gradient-card);
-  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-ink);
   border-radius: var(--radius-lg);
-  padding: 24px;
+  box-shadow: var(--shadow-lg);
+  transform: rotate(2.5deg);
+  animation: scaleIn 0.6s ease 0.1s both;
+}
+.hero-ticket:hover { transform: rotate(0deg); transition: transform var(--transition-slow); }
+
+.ht-top {
   display: flex;
-  align-items: center;
-  gap: 16px;
-  transition: all var(--transition-base);
-}
-
-.stat-card:hover {
-  border-color: var(--color-border-light);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.stat-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.stat-icon-primary { background: rgba(2, 77, 223, 0.15); color: var(--color-primary-light); }
-.stat-icon-accent { background: rgba(0, 255, 255, 0.1); color: var(--color-accent); }
-.stat-icon-success { background: var(--color-success-bg); color: var(--color-success); }
-
-.stat-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.stat-value {
-  font-size: 1.8rem;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--color-primary);
+  color: var(--color-paper);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
   font-weight: 700;
-  color: var(--color-text);
-  line-height: 1;
-  margin-bottom: 4px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
+.ht-serial { letter-spacing: 0.1em; }
 
-.stat-label {
-  font-size: 0.8rem;
+.ht-body { padding: 24px 20px 18px; }
+.ht-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
   color: var(--color-text-muted);
-  font-weight: 500;
+}
+.ht-name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  margin: 8px 0 16px;
+}
+.ht-meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
 }
 
-/* ── Quick Actions ── */
-.quick-actions {
-  max-width: 1280px;
-  margin: 48px auto 0;
-  padding: 0 24px 60px;
+.ht-perf {
+  position: relative;
+  height: 0;
+  margin: 0 14px;
+  border-top: 2px dashed var(--color-border-light);
 }
+.ht-notch {
+  position: absolute;
+  top: 50%;
+  width: 18px; height: 18px;
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-ink);
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+.ht-notch.l { left: -23px; }
+.ht-notch.r { right: -23px; }
+
+.ht-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px 20px;
+}
+.ht-foot .barcode { max-width: 120px; height: 32px; }
+.ht-price {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+
+/* ── Ledger ── */
+.ledger {
+  width: calc(100% - 64px);
+  max-width: calc(1180px - 64px);
+  margin: 56px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.ledger-item {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 26px 30px;
+  border-right: 1.5px solid var(--color-border);
+  animation: fadeInUp 0.5s ease both;
+}
+.ledger-item:last-child { border-right: none; }
+
+.ledger-value {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--color-primary);
+}
+
+.ledger-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+/* ── Quick actions ── */
+.quick {
+  max-width: 1180px;
+  margin: 64px auto 0;
+  padding: 0 32px 40px;
+}
+
+.quick-head { margin-bottom: 28px; }
 
 .section-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--color-text);
-  margin-bottom: 24px;
-  letter-spacing: -0.01em;
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  margin-top: 12px;
 }
 
-.action-card {
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1.5px solid var(--color-ink);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.quick-card {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 28px;
-  background: var(--gradient-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  gap: 10px;
+  padding: 30px 26px 26px;
+  background: var(--color-surface);
+  border-right: 1.5px solid var(--color-border);
   text-decoration: none;
   color: var(--color-text);
-  transition: all var(--transition-base);
-  position: relative;
+  transition: background var(--transition-fast);
+}
+.quick-card:last-child { border-right: none; }
+.quick-card:hover { background: var(--color-bg-elevated); }
+
+.quick-num {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-primary);
 }
 
-.action-card:hover {
-  border-color: var(--color-primary);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-glow);
-}
-
-.action-card:hover .action-arrow {
-  transform: translateX(4px);
-  opacity: 1;
-}
-
-.action-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(2, 77, 223, 0.15);
-  color: var(--color-primary-light);
-}
-
-.action-icon-accent { background: rgba(0, 255, 255, 0.1); color: var(--color-accent); }
-.action-icon-warning { background: var(--color-warning-bg); color: var(--color-warning); }
-
-.action-card h3 {
-  font-size: 1.05rem;
+.quick-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
   font-weight: 600;
-  color: var(--color-text);
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
 }
 
-.action-card p {
-  font-size: 0.85rem;
+.quick-card p {
+  font-size: 0.88rem;
   color: var(--color-text-muted);
-  line-height: 1.5;
+  line-height: 1.55;
   flex: 1;
 }
 
-.action-arrow {
-  font-size: 1.2rem;
-  color: var(--color-primary-light);
-  transition: all var(--transition-base);
-  opacity: 0.5;
+.quick-go {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  transition: color var(--transition-fast);
+}
+.quick-card:hover .quick-go { color: var(--color-primary); }
+
+/* ── Responsivo ── */
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+  .hero-ticket { max-width: 380px; transform: rotate(1.5deg); }
 }
 
-/* ── Responsive ── */
-@media (max-width: 768px) {
-  .hero {
-    min-height: 340px;
-  }
-
-  .hero-title {
-    font-size: 2rem;
-  }
-
-  .hero-subtitle {
-    font-size: 0.95rem;
-  }
-
-  .stats-section {
-    margin-top: -24px;
-  }
+@media (max-width: 720px) {
+  .ledger { grid-template-columns: 1fr; }
+  .ledger-item { border-right: none; border-bottom: 1.5px solid var(--color-border); }
+  .ledger-item:last-child { border-bottom: none; }
+  .quick-grid { grid-template-columns: 1fr; }
+  .quick-card { border-right: none; border-bottom: 1.5px solid var(--color-border); }
+  .quick-card:last-child { border-bottom: none; }
 }
 
-@media (max-width: 640px) {
-  .hero-title {
-    font-size: 1.8rem;
-  }
-
-  .hero-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
+@media (max-width: 560px) {
+  .hero { padding: 40px 18px 16px; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .ledger { width: calc(100% - 36px); }
 }
 </style>

@@ -40,9 +40,9 @@ class EventController extends Controller
         $this->validate($request, [
             'name'        => 'required|string|max:255',
             'description' => 'required|string',
-            'price'       => 'required|numeric|min:0',
+            'price'       => 'required|numeric|min:0|max:1000000',
             'event_date'  => 'required|date|after:now',
-            'capacity'    => 'required|integer|min:1',
+            'capacity'    => 'required|integer|min:1|max:1000000',
         ]);
 
         try {
