@@ -5,7 +5,6 @@ namespace App\Infrastructure\Jobs;
 use App\Application\DTOs\BuyTicketDTO;
 use App\Application\UseCases\ProcessTicketPurchaseUseCase;
 use App\Domain\Event\Repositories\EventRepositoryInterface;
-use App\Mail\TicketPurchasedMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -51,11 +50,9 @@ class ProcessTicketPurchaseJob implements ShouldQueue
                 return; // Encerra o job com "sucesso" na fila para não causar retry, pois foi uma falha de negócio definitiva
             }
 
-            // Pagamento aprovado: Processa a regra de negócio (reserva vaga e cria ticket)
+            // Pagamento aprovado: processa a regra de negócio (reserva a vaga, cria o ingresso e
+            // dispara o e-mail de confirmação via TicketNotifierInterface dentro do próprio UseCase).
             $ticket = $useCase->execute($this->dto);
-
-            // Enviar E-mail de Sucesso
-            Mail::to($this->dto->userEmail)->send(new TicketPurchasedMail($ticket, $event, $this->dto->userName));
 
             Log::info('Pagamento aprovado. Ingresso processado com sucesso e e-mail enviado.', [
                 'ticket_id'      => $ticket->getId(),

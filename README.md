@@ -22,7 +22,7 @@ sobre **DDD (Domain-Driven Design)** e **Clean Architecture**.
 |---|-------|--------|------------------------|
 | 1 | **Não vender acima da capacidade** | ✅ | `Event::decrementCapacity()` lança exceção quando esgota + `lockForUpdate` em `ProcessTicketPurchaseUseCase` impede *overselling* em compras simultâneas |
 | 2 | **Impedir compra de eventos passados** | ✅ | `Event::isPastEvent()`, checado em `RequestTicketUseCase` e `ProcessTicketPurchaseUseCase` |
-| 3 | **Validar status do pagamento** | ⚠️ **Pendente** | Hoje o `Ticket` vai de `pending → confirmed` direto. Falta uma etapa de pagamento (ex.: campo `payment_status`) que só confirme o ingresso após aprovação |
+| 3 | **Validar status do pagamento** | ✅ | `ProcessTicketPurchaseJob` simula um **gateway de pagamento**: só executa o `ProcessTicketPurchaseUseCase` (que cria o ingresso e envia o e-mail de confirmação) se o pagamento for **aprovado**; se **recusado**, envia e-mail de falha (`TicketFailedMail`) e **não** cria o ingresso. A forma de pagamento (`payment_method`) é enviada na compra |
 
 ---
 
@@ -68,8 +68,11 @@ Implementações concretas das interfaces do Domain/Application.
 - `Models/EventModel`, `Models/TicketModel` — modelos Eloquent.
 - `Repositories/EloquentEventRepository`, `EloquentTicketRepository` — traduzem entre Eloquent e as
   entidades do Domain.
-- `Jobs/ProcessTicketPurchaseJob` — job de fila (3 tentativas, timeout 60s), tratado pelo
-  `ProcessTicketPurchaseUseCase`.
+- `Jobs/ProcessTicketPurchaseJob` — job de fila (3 tentativas, timeout 60s). Simula o **gateway de
+  pagamento**: se aprovado, chama o `ProcessTicketPurchaseUseCase`; se recusado, envia
+  `TicketFailedMail` e encerra sem criar o ingresso (Regra 3).
+- `app/Mail/TicketFailedMail` + `resources/views/emails/ticket_failed.blade.php` — e-mail de
+  **pagamento recusado** (Mailable do Laravel + view Blade).
 - `Notifications/MailTicketNotifier` — envia o e-mail de comprovante via SMTP. O HTML reproduz o
   **design system do frontend** ("Box Office / Letterpress": papel creme, tinta, vermelho
   vermilion, motivos de ingresso). Falha de e-mail **só é logada** — não desfaz a compra já
@@ -96,6 +99,10 @@ POST /v1/tickets/buy
   → RequestTicketUseCase        (checagem rápida: evento existe? não é passado? tem vaga?)
   → dispatch(ProcessTicketPurchaseJob)        → responde 202 Accepted
         ↓ (worker da fila processa de forma assíncrona)
+  → ProcessTicketPurchaseJob
+      → simula o gateway de pagamento (aprovado / recusado)
+          • RECUSADO → envia TicketFailedMail e encerra (NÃO cria ingresso)
+          • APROVADO ↓
   → ProcessTicketPurchaseUseCase  dentro de  DB::transaction()
       → findByIdWithLock()        (SELECT ... FOR UPDATE — trava a linha do evento)
       → User::firstOrCreate()
@@ -138,10 +145,10 @@ curl -X POST http://localhost:8000/v1/events \
   -H "Content-Type: application/json" \
   -d '{"name":"Show de Jazz","description":"Noite de jazz","price":120.00,"event_date":"2026-12-20 21:00","capacity":100}'
 
-# Comprar ingresso (retorna 202; o worker confirma e envia o e-mail)
+# Comprar ingresso (retorna 202; o worker valida o pagamento, confirma e envia o e-mail)
 curl -X POST http://localhost:8000/v1/tickets/buy \
   -H "Content-Type: application/json" \
-  -d '{"event_id":1,"user_name":"Maria","user_email":"maria@exemplo.com"}'
+  -d '{"event_id":1,"user_name":"Maria","user_email":"maria@exemplo.com","payment_method":"credit_card"}'
 ```
 
 ---
